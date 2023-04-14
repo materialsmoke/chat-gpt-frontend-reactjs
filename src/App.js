@@ -5,7 +5,7 @@ import "./App.css";
 import ChatHistory from "./components/ChatHistory";
 import ChatUI from "./components/ChatUI";
 
-const baseURL = "https://api-staging.penrunner.com/api";
+const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
   // const [chats, setChats] = useState([]);
