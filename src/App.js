@@ -255,49 +255,49 @@ function App() {
       </div>
       :<div>
         {showLoginForm?<div className="login-wrapper">
-          <h1>فرم ورود</h1>
+          <h1>Login Form</h1>
           <form onSubmit={handleLoginSubmit}>
             <label>
-              <p>ایمیل</p>
+              <p>Email</p>
               <input type="text" onChange={e => setLoginEmail(e.target.value)}/>
             </label>
             <label>
-              <p>رمز عبور</p>
+              <p>Password</p>
               <input type="password" onChange={e => setLoginPassword(e.target.value)}/>
             </label>
             <div>
-              <button type="submit">ورود</button>
+              <button type="submit">Login</button>
             </div>
           </form>
         </div>
         :<div className="login-wrapper">
-          <h1>فرم ثبت نام</h1>
+          <h1>Register Form</h1>
           <form onSubmit={handleRegisterSubmit}>
             <label>
-              <p>ایمیل</p>
+              <p>Email</p>
               <input type="text" onChange={e => setRegisterEmail(e.target.value)}/>
             </label>
             <label>
-              <p>رمز عبور</p>
+              <p>Password</p>
               <input type="password" onChange={e => setRegisterPassword(e.target.value)}/>
             </label>
             <label>
-              <p>تکرار رمز عبور</p>
+              <p>Repeat Password</p>
               <input type="password" onChange={e => setRegisterRepeatPassword(e.target.value)}/>
             </label>
             <div>
-              <button type="submit">ثبت نام</button>
+              <button type="submit">Register and Login</button>
             </div>
           </form>
         </div>}
       </div>}
       <div className="footer">
         {isLoggedIn? <p>
-          <button onClick={handleLogout}>خروج از حساب کاربری</button>
+          <button onClick={handleLogout}>Logout</button>
         </p>
         :<p>
-          {showLoginForm?<button onClick={()=>setShowLoginForm(false)}>نمایش فرم ثبت نام</button>
-            :<button onClick={()=>setShowLoginForm(true)}>نمایش فرم ورود</button>
+          {showLoginForm?<button onClick={()=>setShowLoginForm(false)}>Go to register form</button>
+            :<button onClick={()=>setShowLoginForm(true)}>Go to login form</button>
           }
         </p>
       }
