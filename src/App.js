@@ -24,7 +24,7 @@ function App() {
   const [inputMessage, setInputMessage] = useState("");
   const messagesEndRef = useRef(null);
   const [isAssistantTyping, setIsAssistantTyping] = useState(false);
-  
+
   const [token, setToken] = useState("");
   const initAxios = () => {
     // console.log('initAxios Token', token);
@@ -32,23 +32,22 @@ function App() {
       baseURL: baseURL,
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + token
+        Authorization: "Bearer " + token,
       },
-      timeout: 60000
+      timeout: 60000,
     });
   };
 
   useEffect(() => {
-    if(localStorage.getItem('userToken')){
-      setToken(localStorage.getItem('userToken'));
-      setIsLoggedIn(true)
-      if(token.length > 10){
+    if (localStorage.getItem("userToken")) {
+      setToken(localStorage.getItem("userToken"));
+      setIsLoggedIn(true);
+      if (token.length > 10) {
         fetchChats();
       }
-    }else{
-      setIsLoggedIn(false)
+    } else {
+      setIsLoggedIn(false);
     }
-    
   }, [token]);
 
   useEffect(() => {
@@ -71,7 +70,7 @@ function App() {
     try {
       const axios = initAxios();
       const response = await axios.get(`/chats/`);
-      console.log('fetch chats list:', response)
+      console.log("fetch chats list:", response);
       setChats(response.data);
     } catch (error) {
       console.error("Error fetching chats:", error);
@@ -142,7 +141,7 @@ function App() {
     try {
       const axios = initAxios();
       const response = await axios.post(`/chats/`);
-      console.log('createNewChat', response) 
+      console.log("createNewChat", response);
       const newChat = response.data;
 
       setChats([newChat, ...chats]);
@@ -172,135 +171,164 @@ function App() {
 
   function loginUser(credentials) {
     return fetch(`${baseURL}/login`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(credentials)
+      body: JSON.stringify(credentials),
     })
-    .then(res => res.json())
-    .then(data => {
-      console.log('login token', data.access_token)
-      localStorage.setItem('userToken', data.access_token)
-      setToken(data.access_token);
-      setIsLoggedIn(true)
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("login token", data.access_token);
+        localStorage.setItem("userToken", data.access_token);
+        setToken(data.access_token);
+        setIsLoggedIn(true);
+      });
   }
 
-  const handleLoginSubmit = async e => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     loginUser({
       email: loginEmail,
-      password: loginPassword
+      password: loginPassword,
     });
-  }
+  };
 
   async function registerUser(credentials) {
     fetch(`${baseURL}/register`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(credentials)
+      body: JSON.stringify(credentials),
     })
-    .then(res => res.json())
-    .then(data => {
-      console.log('register token', data.access_token)
-      localStorage.setItem('userToken', data.access_token)
-      setToken(data.access_token);
-      setIsLoggedIn(true)
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("register token", data.access_token);
+        localStorage.setItem("userToken", data.access_token);
+        setToken(data.access_token);
+        setIsLoggedIn(true);
+      });
   }
-  
-  const handleRegisterSubmit = async e => {
+
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     registerUser({
       name: registerEmail,
       email: registerEmail,
-      password: registerPassword
+      password: registerPassword,
     });
-  }
+  };
 
-  const handleLogout = ()=>{
-    localStorage.removeItem('userToken');
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
     setToken("");
-    setIsLoggedIn(false)
-  }
+    setIsLoggedIn(false);
+  };
 
   return (
     <div className="App">
       <div className="headline">
-        <h1>⚡ ChatGPT ⚡</h1>
+        <h1>⚡ Penrunner ⚡</h1>
       </div>
-      {isLoggedIn?<div className="chat-container">
-        <div className="chat-history-container">
-          <button className="new-chat-button" onClick={createNewChat}>
-            <strong>+ New Chat</strong>
-          </button>
-          <ChatHistory
-            chats={chats}
-            selectedChatId={selectedChatId}
-            setSelectedChatId={setSelectedChatId}
+      {isLoggedIn ? (
+        <div className="chat-container">
+          <div className="chat-history-container">
+            <button className="new-chat-button" onClick={createNewChat}>
+              <strong>+ New Chat</strong>
+            </button>
+            <ChatHistory
+              chats={chats}
+              selectedChatId={selectedChatId}
+              setSelectedChatId={setSelectedChatId}
+            />
+          </div>
+          <ChatUI
+            messages={messages}
+            inputMessage={inputMessage}
+            setInputMessage={setInputMessage}
+            sendMessage={sendMessage}
+            formatMessageContent={formatMessageContent}
+            isAssistantTyping={isAssistantTyping}
+            messagesEndRef={messagesEndRef}
           />
         </div>
-        <ChatUI
-          messages={messages}
-          inputMessage={inputMessage}
-          setInputMessage={setInputMessage}
-          sendMessage={sendMessage}
-          formatMessageContent={formatMessageContent}
-          isAssistantTyping={isAssistantTyping}
-          messagesEndRef={messagesEndRef}
-        />
-      </div>
-      :<div>
-        {showLoginForm?<div className="login-wrapper">
-          <h1>Login Form</h1>
-          <form onSubmit={handleLoginSubmit}>
-            <label>
-              <p>Email</p>
-              <input type="text" onChange={e => setLoginEmail(e.target.value)}/>
-            </label>
-            <label>
-              <p>Password</p>
-              <input type="password" onChange={e => setLoginPassword(e.target.value)}/>
-            </label>
-            <div>
-              <button type="submit">Login</button>
+      ) : (
+        <div>
+          {showLoginForm ? (
+            <div className="login-wrapper">
+              <h1>Login Form</h1>
+              <form onSubmit={handleLoginSubmit}>
+                <label>
+                  <p>Email</p>
+                  <input
+                    type="text"
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                  />
+                </label>
+                <label>
+                  <p>Password</p>
+                  <input
+                    type="password"
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                  />
+                </label>
+                <div>
+                  <button type="submit">Login</button>
+                </div>
+              </form>
             </div>
-          </form>
+          ) : (
+            <div className="login-wrapper">
+              <h1>Register Form</h1>
+              <form onSubmit={handleRegisterSubmit}>
+                <label>
+                  <p>Email</p>
+                  <input
+                    type="text"
+                    onChange={(e) => setRegisterEmail(e.target.value)}
+                  />
+                </label>
+                <label>
+                  <p>Password</p>
+                  <input
+                    type="password"
+                    onChange={(e) => setRegisterPassword(e.target.value)}
+                  />
+                </label>
+                <label>
+                  <p>Repeat Password</p>
+                  <input
+                    type="password"
+                    onChange={(e) => setRegisterRepeatPassword(e.target.value)}
+                  />
+                </label>
+                <div>
+                  <button type="submit">Register and Login</button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
-        :<div className="login-wrapper">
-          <h1>Register Form</h1>
-          <form onSubmit={handleRegisterSubmit}>
-            <label>
-              <p>Email</p>
-              <input type="text" onChange={e => setRegisterEmail(e.target.value)}/>
-            </label>
-            <label>
-              <p>Password</p>
-              <input type="password" onChange={e => setRegisterPassword(e.target.value)}/>
-            </label>
-            <label>
-              <p>Repeat Password</p>
-              <input type="password" onChange={e => setRegisterRepeatPassword(e.target.value)}/>
-            </label>
-            <div>
-              <button type="submit">Register and Login</button>
-            </div>
-          </form>
-        </div>}
-      </div>}
+      )}
       <div className="footer">
-        {isLoggedIn? <p>
-          <button onClick={handleLogout}>Logout</button>
-        </p>
-        :<p>
-          {showLoginForm?<button onClick={()=>setShowLoginForm(false)}>Go to register form</button>
-            :<button onClick={()=>setShowLoginForm(true)}>Go to login form</button>
-          }
-        </p>
-      }
+        {isLoggedIn ? (
+          <p>
+            <button onClick={handleLogout}>Logout</button>
+          </p>
+        ) : (
+          <p>
+            {showLoginForm ? (
+              <button onClick={() => setShowLoginForm(false)}>
+                Go to register form
+              </button>
+            ) : (
+              <button onClick={() => setShowLoginForm(true)}>
+                Go to login form
+              </button>
+            )}
+          </p>
+        )}
       </div>
     </div>
   );
